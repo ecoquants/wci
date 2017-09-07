@@ -1,0 +1,77 @@
+---
+title: "Prep"
+author: "Ben Best"
+date: "September 7, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Parcel Database for SB
+
+- Notes with mapview screenshots in [Granny Flats - Google Docs](https://docs.google.com/document/d/11nbM4doxKDoz1LG7m9W6J702tzwk_AkHI_R7T94SOwk/edit#)
+
+- Source: [California Parcel Boundaries | Los Angeles County GIS Data Portal](https://egis3.lacounty.gov/dataportal/2015/09/11/california-statewide-parcel-boundaries/)
+
+  ![](http://egis3.lacounty.gov/dataportal/wp-content/uploads/2015/09/Collection_2112-14-791x1024.png)
+
+Open all parcels for Santa Barbara.
+
+```{r read parcels, message=F, warning=F}
+library(tidyverse)
+library(sf)
+library(rgdal)
+library(mapview)
+library(ggmap)
+
+gdb = '/Volumes/Best HD/grannyflats/Parcels_CA_2014.gdb'
+sb100_geo = '../data/sb100.geojson'
+# ogrInfo(gdb); ogrListLayers(gdb)
+
+sb = read_sf(gdb, 'Santa_Barbara')
+#mapview(sb)
+
+sb %>%
+  st_set_geometry(NULL) %>%
+  head()
+```
+
+Above is first 6 rows of data out of `r nrow(sb)` rows total.
+
+Let's plot them, colored by area.
+
+```{r plot all parcels}
+plot(sb['SHAPE_Area'])
+```
+
+## Extract to Neighborhood
+
+```{r extract sb100}
+# project into geographic coordinates
+sb = st_transform(sb, 4326)
+
+fid = 19626 # BB's 812 W Sola St address
+
+if (!file.exists(sb100_geo)){
+  sb100 = sb[(fid-49):(fid+50),] %>%
+  mutate(
+    pt      = map(SHAPE, st_centroid),
+    address = map_chr(pt, revgeocode))
+  write_sf(sb100, sb100_geo)
+}
+sb100 = read_sf(sb100_geo)
+
+mapview(sb100)
+```
+
+### Geocoding
+
+Now extract and reverse geo
+
+- `revgeocode()`: google maps api limits to 2500 queries a day
+
+```{r some parcels geocoded}
+
+```
