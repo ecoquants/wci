@@ -1,0 +1,12 @@
+name: wci-micro-app
+title: wci-micro-app
+username:
+account: ecoquants
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 211962
+bundleId: 972175
+url: https://ecoquants.shinyapps.io/wci-micro-app/
+when: 1504827476.67704
+asMultiple: FALSE
+asStatic: FALSE

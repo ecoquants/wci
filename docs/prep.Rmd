@@ -27,7 +27,7 @@ library(mapview)
 library(ggmap)
 
 gdb = '/Volumes/Best HD/grannyflats/Parcels_CA_2014.gdb'
-sb100_geo = '../data/sb100.geojson'
+sb100_geo = '../app/data/sb100.geojson'
 # ogrInfo(gdb); ogrListLayers(gdb)
 
 sb = read_sf(gdb, 'Santa_Barbara')

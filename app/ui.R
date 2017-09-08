@@ -30,5 +30,6 @@ dashboardPage(
     box(
       title='Practices Score', status='info', solidHeader=T, 
       collapsible=T,
+      textOutput('text_score'),
       plotOutput('plot_practices')))
 )

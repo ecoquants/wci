@@ -33,19 +33,8 @@ shinyServer(function(input, output) {
 
   })
   
-  # TODO: model window of climatic rain
   
-  output$plot_practices <- renderPlot({
-    
-    practices = c(
-      'Storage'        = 'storage',
-      'Catchment'      = 'catchment',
-      'Infiltration'   = 'infiltration',
-      'Reduction'      = 'reduction',
-      'Grey Water'     = 'greywater',
-      'Native Habitat' = 'nativehabitat',
-      'Edible Gardens' = 'ediblegardens')
-  
+  get_data = reactive({
     # input = list(sldr_storage=0.1, sldr_catchment=0.1, sldr_infiltration=0.1, sldr_reduction=0.1, sldr_greywater=0.1, sldr_nativehabitat=0.1, sldr_ediblegardens=0.1)
     sldr_enhancements = c(
       input$sldr_storage,
@@ -57,7 +46,7 @@ shinyServer(function(input, output) {
       input$sldr_ediblegardens)
     
     d = tibble(
-      practice          = practices,
+      practice          = factor(practices, practices, ordered=T),
       score_native      = scores_random,
       enhancement       = sldr_enhancements) %>%
       mutate(
@@ -72,7 +61,30 @@ shinyServer(function(input, output) {
         select(practice, score = score_enhance) %>%
         mutate(
           type = 'enhancement'))
-      
+  
+    d
+  })
+  
+  output$text_score <- renderText({
+    
+    d = get_data()
+    
+    #browser()
+    
+    wci = d %>%
+      group_by(practice) %>%
+      summarize(
+        score = sum(score)) %>%
+      .$score %>%
+      mean()
+    
+    sprintf('WCI - Micro Score: %d (of 100)', round(wci*100))
+    
+  })
+  
+  output$plot_practices <- renderPlot({
+    
+    d = get_data()
     
     g = ggplot(d, aes(x=practice, y=score, fill=practice, alpha=type)) + 
       geom_col() + 
