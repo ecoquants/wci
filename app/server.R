@@ -73,7 +73,7 @@ shinyServer(function(input, output) {
     d
   })
   
-  output$text_score <- renderText({
+  output$text_score <- renderUI({
     
     d = get_data()
     
@@ -86,7 +86,8 @@ shinyServer(function(input, output) {
       .$score %>%
       mean()
     
-    sprintf('WCI - Micro Score: %d (of 100)', round(wci*100))
+    #HTML(sprintf('WCI - Micro Score: %d (of 100)', round(wci*100)))
+    HTML(sprintf('<h4>WCI - Micro Score: <b>%d</b> (of 100)</h4>', round(wci*100)))
     
   })
   

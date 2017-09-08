@@ -5,8 +5,8 @@ account: ecoquants
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 211962
-bundleId: 972236
+bundleId: 972256
 url: https://ecoquants.shinyapps.io/wci-micro-app/
-when: 1504830816.17047
+when: 1504832537.60917
 asMultiple: FALSE
 asStatic: FALSE
