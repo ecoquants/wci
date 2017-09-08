@@ -22,14 +22,22 @@ shinyServer(function(input, output) {
     p = address2lonlat()
     
     # input = list(address='812 W Sola St, Santa Barbara CA'); p = geocode(input$address)
+    #browser()
+    
     leaflet(sb100) %>%
-      addProviderTiles('Stamen.TonerLite') %>%
-      #addProviderTiles('Stamen.Terrain') %>%
-      addPolygons() %>%
-      #setView(
-      #  p$lon, p$lat, zoom=10) %>%
+      addProviderTiles('Stamen.TonerLite', group = 'B&W') %>%
+      addProviderTiles('Stamen.Terrain', group = 'Terrain') %>%
+      addPolygons(group='Parcels') %>%
+      setView(
+        p$lon, p$lat, zoom=17) %>%
       addMarkers(
-        p$lon, p$lat, popup=sprintf('%s<br>\n( %g, %g )', input$address, p$lon, p$lat))
+        p$lon, p$lat, 
+        group='Address',
+        popup=sprintf('%s<br>\n( %g, %g )', input$address, p$lon, p$lat)) %>%
+      addLayersControl(
+        baseGroups = c('Terrain','B&W'),
+        overlayGroups = c('Parcels', 'Address'),
+        options = layersControlOptions(collapsed=T))
 
   })
   
