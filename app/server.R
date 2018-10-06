@@ -14,7 +14,13 @@ shinyServer(function(input, output) {
   
   address2lonlat = reactive({
     # geocode: address to lon,lat
-    geocode(input$address)
+    # input <- list(address = "812 W Sola St, Santa Barbara CA")
+    if (input$address == "812 W Sola St, Santa Barbara CA"){
+      res <- data.frame(lon=-119.7162, lat=34.4167)
+    } else {
+      res <- geocode(input$address, source = "dsk")  
+    }
+    res
   })
   
   output$map <- renderLeaflet({
@@ -53,6 +59,7 @@ shinyServer(function(input, output) {
       input$sldr_nativehabitat,
       input$sldr_ediblegardens)
     
+    #browser()
     d = tibble(
       practice          = factor(practices, practices, ordered=T),
       score_native      = scores_random,
@@ -64,12 +71,16 @@ shinyServer(function(input, output) {
       d %>%
         select(practice, score = score_native) %>%
         mutate(
-          type = 'native'),
+          type = "native"),
       d %>%
         select(practice, score = score_enhance) %>%
         mutate(
-          type = 'enhancement'))
+          type = "enhancement")) #%>%
+      #mutate(
+      #  type = factor(type, c("native", "enhancement")))
   
+    #class(d$type); table(d$type)
+    
     d
   })
   
